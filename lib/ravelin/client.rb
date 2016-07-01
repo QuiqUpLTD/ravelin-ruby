@@ -31,7 +31,7 @@ module Ravelin
 
       event = Event.new(**args)
 
-      post("/v2/backfill/#{event.name}", event.serializable_hash)
+      post("/#{API_VERSION}/#{API_BACKFILL}/#{event.name}", event.serializable_hash)
     end
 
     private
