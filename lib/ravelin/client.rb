@@ -36,8 +36,10 @@ module Ravelin
 
     private
 
+    attr_reader :connection
+
     def post(url, payload)
-      response = @connection.post(url, payload.to_json)
+      response = connection.post(url, payload.to_json)
 
       if response.success?
         return Response.new(response)
