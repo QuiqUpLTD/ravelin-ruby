@@ -1,5 +1,7 @@
 module Ravelin
   class PreTransaction < RavelinObject
+    EVENT_NAME = :pretransaction
+
     attr_accessor :transaction_id,
       :email,
       :currency,

@@ -1,5 +1,7 @@
 module Ravelin
   class Order < RavelinObject
+    EVENT_NAME = :order
+
     attr_accessor :order_id,
       :email,
       :price,

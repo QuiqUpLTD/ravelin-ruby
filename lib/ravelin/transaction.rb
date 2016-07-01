@@ -1,5 +1,7 @@
 module Ravelin
   class Transaction < RavelinObject
+    EVENT_NAME = :transaction
+
     attr_accessor :transaction_id,
       :email,
       :currency,

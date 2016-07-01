@@ -1,5 +1,7 @@
 module Ravelin
   class Customer < RavelinObject
+    EVENT_NAME = :customer
+
     attr_accessor :customer_id,
       :registration_time,
       :name,
