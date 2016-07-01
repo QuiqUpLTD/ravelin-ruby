@@ -1,5 +1,7 @@
 module Ravelin
   class Client
+    class CannotScoreAndBackfillError < RuntimeError; end
+
     API_BASE = 'https://api.ravelin.com'
     API_VERSION = 'v2'
     API_BACKFILL = 'backfill'
@@ -13,7 +15,22 @@ module Ravelin
       end
     end
 
+    def send(ravelin_object, backfill: false, score: false)
+      raise CannotScoreAndBackfillError if backfill && score
+
+      url = ['',
+        API_VERSION,
+        backfill ? API_BACKFILL : nil,
+        ravelin_object.event_name,
+      ].compact.join('/').chomp('/')
+      url += score_param(score)
+
+      post(url, ravelin_object.serializable_hash)
+    end
+
     def send_event(**args)
+      warn "[DEPRECATION] `semd_event` is deprecated.  Please use `send` instead."
+
       score = args.delete(:score)
       event = Event.new(**args)
 

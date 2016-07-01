@@ -21,6 +21,34 @@ describe Ravelin::Client do
     before { allow(client).to receive(:post) }
   end
 
+  describe '#send' do
+    let(:client) { described_class.new(api_key: 'abc') }
+
+    it 'posts with the correct url and data' do
+      expect(client).to receive(:post).with("/v2/customer", { "customerId" => "id" })
+
+      client.send Ravelin::Customer.new(customer_id: "id")
+    end
+
+    it 'calls #post with Event payload and score: true' do
+      expect(client).to receive(:post).with("/v2/customer?score=true", { 'customerId' => 'id' })
+
+      client.send(Ravelin::Customer.new(customer_id: "id"), score: true)
+    end
+
+    it 'requests backfill' do
+      expect(client).to receive(:post).with("/v2/backfill/customer", { "customerId" => "id" })
+
+      client.send(Ravelin::Customer.new(customer_id: "id"), backfill: true)
+    end
+
+    it 'raises when backfill and score are requested' do
+      expect {
+        client.send(Ravelin::Customer.new(customer_id: "id"), backfill: true, score: true)
+      }.to raise_error(Ravelin::Client::CannotScoreAndBackfillError)
+    end
+  end
+
   describe '#send_event' do
     include_context 'event setup and stubbing'
 
