@@ -1,6 +1,8 @@
 module Ravelin
   class Client
     API_BASE = 'https://api.ravelin.com'
+    API_VERSION = 'v2'
+    API_BACKFILL = 'backfill'
 
     def initialize(api_key:)
       @api_key = api_key
@@ -15,9 +17,11 @@ module Ravelin
       score = args.delete(:score)
       event = Event.new(**args)
 
-      score_param = score ? "?score=true" : nil
+      post("/#{API_VERSION}/#{event.name}#{score_param(score)}", event.serializable_hash)
+    end
 
-      post("/v2/#{event.name}#{score_param}", event.serializable_hash)
+    def score_param(score)
+      score ? "?score=true" : ''
     end
 
     def send_backfill_event(**args)
