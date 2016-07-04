@@ -29,8 +29,6 @@ module Ravelin
     end
 
     def send_event(**args)
-      warn "[DEPRECATION] `semd_event` is deprecated.  Please use `send` instead."
-
       score = args.delete(:score)
       event = Event.new(**args)
 

@@ -2,7 +2,7 @@ module Ravelin
   class Event
     attr_accessor :name, :timestamp, :payload
 
-    def initialize(name:, payload:, timestamp: nil)
+    def initialize(name:, payload:, timestamp: nil, device: nil, device_id: nil)
       @name = convert_event_name(name)
       @payload = convert_to_ravelin_objects(payload)
       @timestamp = timestamp.nil? ? Time.now.to_i : convert_to_epoch(timestamp)
