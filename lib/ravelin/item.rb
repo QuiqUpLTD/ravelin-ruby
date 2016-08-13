@@ -1,7 +1,5 @@
 module Ravelin
   class Item < RavelinObject
-    # EVENT_NAME = :item
-
     attr_accessor :sku,
       :name,
       :price,

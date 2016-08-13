@@ -18,6 +18,7 @@ module Ravelin
       end
     end
 
+    # event_path / entity_path
     def event_name
       self.class::EVENT_NAME
     end

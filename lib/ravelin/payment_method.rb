@@ -1,7 +1,5 @@
 module Ravelin
   class PaymentMethod < RavelinObject
-    # EVENT_NAME = :payment
-
     attr_accessor :payment_method_id,
       :nick_name,
       :method_type,

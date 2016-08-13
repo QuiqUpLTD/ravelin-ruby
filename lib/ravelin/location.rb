@@ -1,7 +1,5 @@
 module Ravelin
   class Location < RavelinObject
-    # EVENT_NAME = :location
-
     attr_accessor :location_id,
       :street1,
       :street2,
