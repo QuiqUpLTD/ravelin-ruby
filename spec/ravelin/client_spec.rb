@@ -21,35 +21,6 @@ describe Ravelin::Client do
     before { allow(client).to receive(:post) }
   end
 
-  describe '#send_entity' do
-    let(:client) { described_class.new(api_key: 'abc') }
-    let(:entity) { Ravelin::Customer.new(customer_id: "id") }
-
-    it 'posts with the correct url and data' do
-      expect(client).to receive(:post).with("/v2/customer", { "customerId" => "id" })
-
-      client.send_entity entity: entity
-    end
-
-    it 'calls #post with Event payload and score: true' do
-      expect(client).to receive(:post).with("/v2/customer?score=true", { 'customerId' => 'id' })
-
-      client.send_entity(entity: entity, score: true)
-    end
-
-    it 'requests backfill' do
-      expect(client).to receive(:post).with("/v2/backfill/customer", { "customerId" => "id" })
-
-      client.send_entity(entity: entity, backfill: true)
-    end
-
-    it 'raises when backfill and score are requested' do
-      expect {
-        client.send_entity(entity: entity, backfill: true, score: true)
-      }.to raise_error(ArgumentError)
-    end
-  end
-
   describe '#send_event' do
     include_context 'event setup and stubbing'
 
@@ -117,6 +88,35 @@ describe Ravelin::Client do
       expect {
         client.send_backfill_event(name: :foobar, payload: {})
       }.to raise_exception(ArgumentError, /missing parameters: timestamp/)
+    end
+  end
+
+  describe '#send_entity' do
+    let(:client) { described_class.new(api_key: 'abc') }
+    let(:entity) { Ravelin::Customer.new(customer_id: "id") }
+
+    it 'posts with the correct url and data' do
+      expect(client).to receive(:post).with("/v2/customer", { "customerId" => "id" })
+
+      client.send_entity entity: entity
+    end
+
+    it 'calls #post with Event payload and score: true' do
+      expect(client).to receive(:post).with("/v2/customer?score=true", { 'customerId' => 'id' })
+
+      client.send_entity(entity: entity, score: true)
+    end
+
+    it 'requests backfill' do
+      expect(client).to receive(:post).with("/v2/backfill/customer", { "customerId" => "id" })
+
+      client.send_entity(entity: entity, backfill: true)
+    end
+
+    it 'raises when backfill and score are requested' do
+      expect {
+        client.send_entity(entity: entity, backfill: true, score: true)
+      }.to raise_error(ArgumentError)
     end
   end
 

@@ -13,27 +13,11 @@ module Ravelin
       end
     end
 
-    def send_entity(entity:, backfill: false, score: false)
-      raise ArgumentError, 'Cannot Backfill and Score in same request' if backfill && score
-
-      url = ['',
-        API_VERSION,
-        backfill ? API_BACKFILL : nil,
-        entity.event_name,
-      ].compact.join('/') + score_param(score)
-
-      post(url, entity.serializable_hash)
-    end
-
     def send_event(**args)
       score = args.delete(:score)
       event = Event.new(**args)
 
       post("/#{API_VERSION}/#{event.name}#{score_param(score)}", event.serializable_hash)
-    end
-
-    def score_param(score)
-      score ? "?score=true" : ''
     end
 
     def send_backfill_event(**args)
@@ -44,6 +28,18 @@ module Ravelin
       event = Event.new(**args)
 
       post("/#{API_VERSION}/#{API_BACKFILL}/#{event.name}", event.serializable_hash)
+    end
+
+    def send_entity(entity:, backfill: false, score: false)
+      raise ArgumentError, 'Cannot Backfill and Score in same request' if backfill && score
+
+      url = ['',
+        API_VERSION,
+        backfill ? API_BACKFILL : nil,
+        entity.event_name,
+      ].compact.join('/') + score_param(score)
+
+      post(url, entity.serializable_hash)
     end
 
     private
@@ -82,6 +78,10 @@ module Ravelin
           'User-Agent'    => "Ravelin RubyGem/#{Ravelin::VERSION}".freeze
         }
       }
+    end
+
+    def score_param(score)
+      score ? "?score=true" : ''
     end
   end
 end
