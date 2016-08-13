@@ -13,23 +13,6 @@ module Ravelin
       end
     end
 
-    def send_event(**args)
-      score = args.delete(:score)
-      event = Event.new(**args)
-
-      post("/#{API_VERSION}/#{event.name}#{score_param(score)}", event.serializable_hash)
-    end
-
-    def send_backfill_event(**args)
-      unless args.has_key?(:timestamp)
-        raise ArgumentError.new('missing parameters: timestamp')
-      end
-
-      event = Event.new(**args)
-
-      post("/#{API_VERSION}/#{API_BACKFILL}/#{event.name}", event.serializable_hash)
-    end
-
     ##
     # send_event and send_backfill_event combined into one method.
     # +entity+ - Ravelin::RavelinObject derived class, eg Customer

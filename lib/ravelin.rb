@@ -23,7 +23,6 @@ require 'ravelin/pre_transaction'
 require 'ravelin/transaction'
 require 'ravelin/label'
 
-require 'ravelin/event'
 require 'ravelin/response'
 require 'ravelin/client'
 

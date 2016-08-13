@@ -21,76 +21,6 @@ describe Ravelin::Client do
     before { allow(client).to receive(:post) }
   end
 
-  describe '#send_event' do
-    include_context 'event setup and stubbing'
-
-    it 'creates an event with method arguments' do
-      expect(Ravelin::Event).to receive(:new).
-        with(name: 'foo', timestamp: 12345, payload: { key: 'value' }).
-        and_return(event)
-
-      client.send_event(
-        name: 'foo',
-        timestamp: 12345,
-        payload: { key: 'value' },
-      )
-    end
-
-    it 'calls #post with Event payload' do
-      allow(Ravelin::Event).to receive(:new) { event }
-
-      expect(client).to receive(:post).with("/v2/foobar", { id: 'ch-123' })
-
-      client.send_event
-    end
-
-    it 'calls #post with Event payload and score: true' do
-      allow(Ravelin::Event).to receive(:new) { event }
-
-      expect(client).to receive(:post).with("/v2/foobar?score=true", { id: 'ch-123' })
-
-      client.send_event(score: true)
-    end
-
-    it 'calls #post with Event payload and score: false' do
-      allow(Ravelin::Event).to receive(:new) { event }
-
-      expect(client).to receive(:post).with("/v2/foobar", { id: 'ch-123' })
-
-      client.send_event(score: false)
-    end
-  end
-
-  describe '#send_backfill_event' do
-    include_context 'event setup and stubbing'
-
-    it 'creates an event with method arguments' do
-      expect(Ravelin::Event).to receive(:new).
-        with(name: 'foo', timestamp: 12345, payload: { key: 'value' }).
-        and_return(event)
-
-      client.send_backfill_event(
-        name: 'foo',
-        timestamp: 12345,
-        payload: { key: 'value' }
-      )
-    end
-
-    it 'calls #post /v2/backfill/{{event}} with Event payload' do
-      allow(Ravelin::Event).to receive(:new) { event }
-
-      expect(client).to receive(:post).with("/v2/backfill/foobar", { id: 'ch-123' })
-
-      client.send_backfill_event(timestamp: Time.now)
-    end
-
-    it 'raises exception when timestamp argument is missing' do
-      expect {
-        client.send_backfill_event(name: :foobar, payload: {})
-      }.to raise_exception(ArgumentError, /missing parameters: timestamp/)
-    end
-  end
-
   describe '#send_entity' do
     let(:client) { described_class.new(api_key: 'abc') }
     let(:entity) { Ravelin::Customer.new(customer_id: "id") }
@@ -127,7 +57,7 @@ describe Ravelin::Client do
     end
 
     before do
-      allow(Ravelin::Event).to receive(:new).and_return(event)
+      # allow(Ravelin::Event).to receive(:new).and_return(event)
     end
 
     it 'calls Ravelin with correct headers and body' do
@@ -205,7 +135,7 @@ describe Ravelin::Client do
     let(:client) { described_class.new(api_key: 'abc') }
 
     before do
-      allow(Ravelin::Event).to receive(:new).and_return(event)
+      # allow(Ravelin::Event).to receive(:new).and_return(event)
       stub_request(:post, 'https://api.ravelin.com/v2/ping').
         and_return(status: status_code, body: "{}")
     end
