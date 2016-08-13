@@ -15,9 +15,7 @@ module Ravelin
       score = args.delete(:score)
       event = Event.new(**args)
 
-      score_param = score ? "?score=true" : nil
-
-      post("/v2/#{event.name}#{score_param}", event.serializable_hash)
+      post("/v2/#{event.name}#{score_param(score)}", event.serializable_hash)
     end
 
     def send_backfill_event(**args)
@@ -64,6 +62,10 @@ module Ravelin
           'User-Agent'    => "Ravelin RubyGem/#{Ravelin::VERSION}".freeze
         }
       }
+    end
+
+    def score_param(score)
+      score ? "?score=true" : ''
     end
   end
 end
