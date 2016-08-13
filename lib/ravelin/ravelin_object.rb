@@ -18,6 +18,10 @@ module Ravelin
       end
     end
 
+    def event_name
+      self.class::EVENT_NAME
+    end
+
     def initialize(args)
       args.each do |key, value|
         self.send("#{key}=", Ravelin.convert_ids_to_strings(key, value))

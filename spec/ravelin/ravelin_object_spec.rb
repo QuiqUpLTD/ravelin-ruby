@@ -96,5 +96,46 @@ describe Ravelin::RavelinObject do
       expect(obj.serializable_hash).to eq({ 'name' => 1388534400 })
     end
   end
+
+  describe '#event_name' do
+    context 'when read from instance' do
+      let(:obj) { described_class.new(name: 'Dummy') }
+
+      it 'raises error as not defined' do
+        expect { obj.event_name }.to raise_error(NameError)
+      end
+    end
+
+    context 'when read from instance of derived class' do
+      let(:obj) { Ravelin::SomeObject.new(name: 'Dummy') }
+
+      context 'when const is not defined' do
+        before do
+          module Ravelin
+            class SomeObject < RavelinObject
+            end
+          end
+        end
+
+        it 'raises error as not defined' do
+          expect { obj.event_name }.to raise_error(NameError)
+        end
+      end
+
+      context 'when const is defined' do
+        before do
+          module Ravelin
+            class SomeObject < RavelinObject
+              EVENT_NAME = :foo
+            end
+          end
+        end
+
+        it 'reads cosnt from derived class' do
+          expect(obj.event_name).to eq :foo
+        end
+      end
+    end
+  end
 end
 
