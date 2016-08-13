@@ -30,6 +30,23 @@ module Ravelin
       post("/#{API_VERSION}/#{API_BACKFILL}/#{event.name}", event.serializable_hash)
     end
 
+    ##
+    # send_event and send_backfill_event combined into one method.
+    # +entity+ - Ravelin::RavelinObject derived class, eg Customer
+    # +backfill+ - if the request is a backfill event
+    # +score+ - if a score should be requested
+    def send_entity(entity:, backfill: false, score: false)
+      raise ArgumentError, 'Cannot Backfill and Score in same request' if backfill && score
+
+      url = ['',
+        API_VERSION,
+        backfill ? API_BACKFILL : nil,
+        entity.event_name,
+      ].compact.join('/') + score_param(score)
+
+      post(url, entity.serializable_hash)
+    end
+
     private
 
     attr_reader :connection
