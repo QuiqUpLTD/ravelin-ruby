@@ -1,5 +1,7 @@
 module Ravelin
   class Label < RavelinObject
+    EVENT_NAME = 'label/customer'
+
     attr_accessor :customer_id,
       :label,
       :comment,
