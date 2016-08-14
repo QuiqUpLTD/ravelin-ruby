@@ -75,9 +75,7 @@ describe Ravelin::RavelinObject do
 
       expect(obj.serializable_hash).to eq({ 'name' => 'Dummy' })
     end
-  end
 
-  describe '#convert_to_epoch' do
     it 'converts Time to epoch' do
       obj = described_class.new(name: Time.new(2015,1,1,0,0,0,'+00:00'))
 
