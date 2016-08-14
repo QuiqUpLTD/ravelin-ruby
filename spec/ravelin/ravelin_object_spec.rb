@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ravelin::RavelinObject do
   before do
-    described_class.attr_accessor :name, :email_address, :address, :street, :customer_id
+    described_class.attr_accessor :name, :email_address, :address, :street, :customer_id, :timestamp
     described_class.attr_required :name
   end
 
@@ -135,5 +135,51 @@ describe Ravelin::RavelinObject do
       end
     end
   end
-end
 
+  describe '#update_timestamp' do
+    let(:obj) { described_class.new(name: 'test', timestamp: timestamp) }
+
+    context 'with no timestamp set in object' do
+      let(:timestamp) { nil }
+
+      context 'with no timestamp passed into method' do
+        subject { obj.update_timestamp(nil) }
+
+        it 'updates the obj timestamp to the time now' do
+          expect { subject }.to change { obj.timestamp }.from(nil).to(Time.now.to_i)
+        end
+      end
+
+      context 'with a valid timestamp passed into method' do
+        let(:new_timestamp) { DateTime.new(2016, 1, 2, 0, 1, 0, '+00:00') }
+        subject { obj.update_timestamp(new_timestamp) }
+
+        it 'updates the obj timestamp to timestamp passed in' do
+          expect { subject }.to change { obj.timestamp }.from(nil).to(1451692860)
+        end
+      end
+    end
+
+    context 'with a timestamp set in object' do
+      let(:datetime) { DateTime.new(2016, 1, 2, 0, 1, 0, '+00:00') }
+      let(:timestamp) { Ravelin.datetime_to_epoch(datetime) }
+
+      context 'with no timestamp passed into method' do
+        subject { obj.update_timestamp(nil) }
+
+        it 'leaves the obj timestamp as is' do
+          expect { subject }.to_not change { obj.timestamp }.from(1451692860)
+        end
+      end
+
+      context 'with a valid timestamp passed into method' do
+        let(:new_timestamp) { DateTime.new(2016, 1, 3, 0, 1, 0, '+00:00') }
+        subject { obj.update_timestamp(new_timestamp) }
+
+        it 'overwrites the obj timestamp to timestamp passed in' do
+          expect { subject }.to change { obj.timestamp }.from(1451692860).to(1451779260)
+        end
+      end
+    end
+  end
+end

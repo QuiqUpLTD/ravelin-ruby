@@ -18,6 +18,18 @@ module Ravelin
       end
     end
 
+    attr_accessor :timestamp
+
+    def update_timestamp(new_timestamp)
+      self.timestamp = if new_timestamp.nil? && timestamp.nil?
+                         Time.now.to_i
+                       elsif !new_timestamp.nil?
+                         Ravelin.convert_to_epoch(new_timestamp)
+                       else
+                         timestamp
+                       end
+    end
+
     def event_name
       self.class::EVENT_NAME
     end
