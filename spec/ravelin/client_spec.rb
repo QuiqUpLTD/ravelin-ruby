@@ -103,7 +103,7 @@ describe Ravelin::Client do
           it_behaves_like 'successful request'
         end
 
-        context 'when the response code is 200' do
+        context 'when the response code is 204' do
           let(:response_status) { 204 }
           let(:body) { '' }
           it_behaves_like 'successful request'
