@@ -52,13 +52,10 @@ describe Ravelin::Client do
 
   describe '#post' do
     let(:client) { described_class.new(api_key: 'abc') }
-    let(:event) do
-      double('event', name: 'ping', serializable_hash: { name: 'value' })
+    let(:entity) do
+      instance_double(Ravelin::RavelinObject, event_name: 'ping', serializable_hash: { name: 'value' })
     end
 
-    before do
-      # allow(Ravelin::Event).to receive(:new).and_return(event)
-    end
 
     it 'calls Ravelin with correct headers and body' do
       stub = stub_request(:post, 'https://api.ravelin.com/v2/ping').
@@ -70,7 +67,7 @@ describe Ravelin::Client do
           body: '{}'
         )
 
-      client.send_event
+      client.send_entity(entity: entity)
 
       expect(stub).to have_been_requested
     end
@@ -87,13 +84,13 @@ describe Ravelin::Client do
       context 'successful' do
         shared_examples 'successful request' do
           it 'returns the response' do
-            expect(client.send_event).to be_a(Ravelin::Response)
+            expect(client.send_entity(entity: entity)).to be_a(Ravelin::Response)
           end
 
           it "not treated as an error" do
             expect(client).to_not receive(:handle_error_response)
 
-            client.send_event
+            client.send_entity(entity: entity)
           end
         end
 
@@ -118,16 +115,19 @@ describe Ravelin::Client do
           expect(client).to receive(:handle_error_response).
             with(kind_of(Faraday::Response))
 
-          client.send_event
+          client.send_entity(entity: entity)
         end
       end
     end
   end
 
   describe '#handle_error_response' do
+    let(:entity) do
+      instance_double(Ravelin::RavelinObject, event_name: 'ping', serializable_hash: { name: 'value' })
+    end
     shared_examples 'raises error with' do |error_class|
       it "raises #{error_class} error" do
-        expect { client.send_event }.to raise_exception(error_class)
+        expect { client.send_entity(entity: entity) }.to raise_exception(error_class)
       end
     end
 
@@ -135,7 +135,6 @@ describe Ravelin::Client do
     let(:client) { described_class.new(api_key: 'abc') }
 
     before do
-      # allow(Ravelin::Event).to receive(:new).and_return(event)
       stub_request(:post, 'https://api.ravelin.com/v2/ping').
         and_return(status: status_code, body: "{}")
     end

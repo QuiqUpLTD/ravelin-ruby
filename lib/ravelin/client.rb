@@ -14,7 +14,6 @@ module Ravelin
     end
 
     ##
-    # send_event and send_backfill_event combined into one method.
     # +entity+ - Ravelin::RavelinObject derived class, eg Customer
     # +backfill+ - if the request is a backfill event
     # +score+ - if a score should be requested
