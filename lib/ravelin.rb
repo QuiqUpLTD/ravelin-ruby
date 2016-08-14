@@ -51,6 +51,16 @@ module Ravelin
       end
     end
 
+    def convert_to_epoch(val)
+      if val.is_a?(Time) || val.is_a?(Date) || val.is_a?(DateTime)
+        Ravelin.datetime_to_epoch(val)
+      elsif val.is_a?(Integer)
+        val
+      else
+        raise TypeError.new(%Q{timestamp requires a Time or epoch Integer})
+      end
+    end
+
     def convert_ids_to_strings(key, value)
       key.to_s.match(/_id\Z/) && value.is_a?(Integer) ? value.to_s : value
     end
