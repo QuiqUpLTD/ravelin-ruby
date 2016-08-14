@@ -56,7 +56,6 @@ describe Ravelin::Client do
       instance_double(Ravelin::RavelinObject, event_name: 'ping', serializable_hash: { name: 'value' })
     end
 
-
     it 'calls Ravelin with correct headers and body' do
       stub = stub_request(:post, 'https://api.ravelin.com/v2/ping').
         with(
@@ -66,6 +65,8 @@ describe Ravelin::Client do
           headers: { 'Content-Type' => 'application/json' },
           body: '{}'
         )
+
+      expect(entity).to receive(:update_timestamp).with(nil)
 
       client.send_entity(entity: entity)
 
@@ -83,6 +84,8 @@ describe Ravelin::Client do
 
       context 'successful' do
         shared_examples 'successful request' do
+          before { allow(entity).to receive(:update_timestamp) }
+
           it 'returns the response' do
             expect(client.send_entity(entity: entity)).to be_a(Ravelin::Response)
           end
@@ -110,11 +113,12 @@ describe Ravelin::Client do
       context 'error' do
         let(:response_status) { 400 }
         let(:body) { '{}' }
-        
+
         it 'handles error response' do
           expect(client).to receive(:handle_error_response).
             with(kind_of(Faraday::Response))
 
+          expect(entity).to receive(:update_timestamp).with(nil)
           client.send_entity(entity: entity)
         end
       end
@@ -135,6 +139,7 @@ describe Ravelin::Client do
     let(:client) { described_class.new(api_key: 'abc') }
 
     before do
+      allow(entity).to receive(:update_timestamp)
       stub_request(:post, 'https://api.ravelin.com/v2/ping').
         and_return(status: status_code, body: "{}")
     end

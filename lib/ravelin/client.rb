@@ -17,7 +17,7 @@ module Ravelin
     # +entity+ - Ravelin::RavelinObject derived class, eg Customer
     # +backfill+ - if the request is a backfill event
     # +score+ - if a score should be requested
-    def send_entity(entity:, backfill: false, score: false)
+    def send_entity(entity:, timestamp: nil, backfill: false, score: false)
       raise ArgumentError, 'Cannot Backfill and Score in same request' if backfill && score
 
       url = ['',
@@ -25,6 +25,8 @@ module Ravelin
         backfill ? API_BACKFILL : nil,
         entity.event_name,
       ].compact.join('/') + score_param(score)
+
+      entity.update_timestamp(timestamp)
 
       post(url, entity.serializable_hash)
     end
