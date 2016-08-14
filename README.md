@@ -66,6 +66,21 @@ client.send_event(
 )
 ```
 
+Using Ravelin classes :
+```ruby
+# build object with required and optional fields
+# will raise if required fields missing or incorrect params set
+ravelin_entity = Ravelin::Customer.new(customer: 1)
+
+# send object, optionally provide defaulted fields
+client.send_entity(
+  entity: ravelin_entity,
+  timestamp: nil   # default from object, or set to now if both nil
+  score: false,    # default
+  backfill: false  # default
+)
+```
+
 
 #### Event names
 
