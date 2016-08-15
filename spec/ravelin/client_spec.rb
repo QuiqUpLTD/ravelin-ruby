@@ -92,23 +92,34 @@ describe Ravelin::Client do
   end
 
   describe '#send_entity' do
+    class Ravelin::TestObject < Ravelin::RavelinObject
+      EVENT_NAME = :test_event
+
+      attr_accessor :test_id
+    end
+
     let(:client) { described_class.new(api_key: 'abc') }
-    let(:entity) { Ravelin::Customer.new(customer_id: "id") }
+    let(:entity) { Ravelin::TestObject.new(test_id: "id") }
+    let(:payload) do
+      {
+        test_event: { "testId" => "id" }
+      }
+    end
 
     it 'posts with the correct url and data' do
-      expect(client).to receive(:post).with("/v2/customer", { "customerId" => "id" })
+      expect(client).to receive(:post).with("/v2/test_event", payload)
 
       client.send_entity entity: entity
     end
 
     it 'calls #post with Event payload and score: true' do
-      expect(client).to receive(:post).with("/v2/customer?score=true", { 'customerId' => 'id' })
+      expect(client).to receive(:post).with("/v2/test_event?score=true", payload)
 
       client.send_entity(entity: entity, score: true)
     end
 
     it 'requests backfill' do
-      expect(client).to receive(:post).with("/v2/backfill/customer", { "customerId" => "id" })
+      expect(client).to receive(:post).with("/v2/backfill/test_event", payload)
 
       client.send_entity(entity: entity, backfill: true)
     end
