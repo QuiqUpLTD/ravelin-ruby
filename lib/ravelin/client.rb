@@ -48,6 +48,7 @@ module Ravelin
 
       payload = {}
       payload[entity.event_name] = entity.serializable_hash
+      payload[:timestamp] = entity.timestamp
       post(url, payload)
     end
 
