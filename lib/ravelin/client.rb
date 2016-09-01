@@ -1,8 +1,10 @@
+require 'logger'
+
 module Ravelin
   class Client
     API_BASE = 'https://api.ravelin.com'
 
-    def initialize(api_key:, logger: Logger.new)
+    def initialize(api_key:, logger: Logger.new(STDOUT))
       @api_key = api_key
       @logger = logger
 
