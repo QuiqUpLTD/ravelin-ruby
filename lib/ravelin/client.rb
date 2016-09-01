@@ -2,8 +2,9 @@ module Ravelin
   class Client
     API_BASE = 'https://api.ravelin.com'
 
-    def initialize(api_key:)
+    def initialize(api_key:, logger: Logger.new)
       @api_key = api_key
+      @logger = logger
 
       @connection = Faraday.new(API_BASE, faraday_options) do |conn|
         conn.response :json, context_type: /\bjson$/
@@ -33,6 +34,7 @@ module Ravelin
     private
 
     def post(url, payload)
+      @logger.debug "Ravelin::Client POST url:#{url}, payload:#{payload}"
       response = @connection.post(url, payload.to_json)
 
       if response.success?
